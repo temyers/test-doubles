@@ -1,9 +1,12 @@
 import { DynamoDB } from "aws-sdk"
+import { DocumentClient } from "aws-sdk/clients/dynamodb";
 import { expect,  } from "chai"
 import { Accounts } from ".."
 import { AccountsDDB } from "../domain/AccountsDDB"
+import { AccountsDDBDocumentClient } from "../domain/AccountsDDBDocumentClient";
 import { id } from "../IdGenerator"
 import { AccountsInMemory } from "./AccountsInMemory"
+
 
 export function suite(accounts:Accounts){
   describe("Accounts", () => {
@@ -111,5 +114,10 @@ suite(new AccountsInMemory())
 
 // Integration test for real implementation
 suite(new AccountsDDB(new DynamoDB({
+  region: "ap-southeast-2"
+}), id))
+
+// Integration test for refactoring to use DynamoDB Document Client
+suite(new AccountsDDBDocumentClient(new DocumentClient({
   region: "ap-southeast-2"
 }), id))

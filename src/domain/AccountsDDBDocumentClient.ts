@@ -1,25 +1,24 @@
-import { DynamoDB } from "aws-sdk";
+// import {  } from "aws-sdk";
+import { DocumentClient } from "aws-sdk/clients/dynamodb";
 import { Account, Accounts, IdGenerator } from "..";
 import { AccountImpl } from "./AccountImpl";
 
-export class AccountsDDB implements Accounts {
-  constructor(private ddb: DynamoDB, private nextId: IdGenerator) {}
+export class AccountsDDBDocumentClient implements Accounts {
+  constructor(private ddb: DocumentClient, private nextId: IdGenerator) {}
   async get(id: string): Promise<Account> {
-    const response = await this.ddb.getItem({
+    const response = await this.ddb.get({
+      TableName: "Accounts",
       Key: {
-        AccountId: {
-          S:id
-        }
-      },
-      TableName: "Accounts"
+        AccountId: id
+      }
     }).promise()
 
     if(!response.Item){
       throw new Error(`AccountNotFound: ${id}`)
     }
-    const balance = response.Item?.Balance?.N as string
+    const balance = response.Item?.Balance as number
 
-    return new AccountImpl(id,parseInt(balance))
+    return new AccountImpl(id,balance)
   }
 
   async create(): Promise<Account> {
@@ -32,19 +31,12 @@ export class AccountsDDB implements Accounts {
     // Not suitable for production use, but makes cleaning up in tests unnecessary
     const TTL_SECONDS = 60
     const ttl = (new Date().getTime() / 1000) + TTL_SECONDS
-    const saveRequests = accounts.map(acc => this.ddb.putItem({
-      Item: {
-        AccountId: {
-          S: acc.id,
-        },
-        Balance: {
-          N: `${acc.balance}`,
-        },
-        TTL: {
-          N: `${ttl}`
-        }
-      },
+    const saveRequests = accounts.map(acc => this.ddb.put({
       TableName: "Accounts",
+      Item: {
+        AccountId: acc.id,
+        Balance: acc.balance
+      }
     }).promise())
     await Promise.all(saveRequests)
   }
