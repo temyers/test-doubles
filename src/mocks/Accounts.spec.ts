@@ -25,7 +25,7 @@ describe("AccountsDDB", () => {
   describe("#create", () => {
     it("should create an account", async () => {
       // when
-      await accounts.create();
+      const account = await accounts.create();
 
       // then
       const expectedParams = {
@@ -39,8 +39,13 @@ describe("AccountsDDB", () => {
         },
         TableName: "Accounts",
       };
+
+      expect(account.id).to.equal("12345")
+      expect(account.balance).to.equal(0)
+      
       expect(createItemSpy.calledWith(expectedParams), "DynamoDB.putItem not called as expected").to.equal(true);
       expect(idMock.called, "IdGenerator not called").to.equal(true)
+
     });
 
   });

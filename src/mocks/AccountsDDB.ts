@@ -6,18 +6,9 @@ export class AccountsDDB implements Accounts {
   constructor(private ddb: DynamoDB, private nextId: IdGenerator) {}
 
   async create(): Promise<Account> {
-    await this.ddb.putItem({
-      Item: {
-        AccountId: {
-          S: this.nextId(),
-        },
-        Balance: {
-          N: "0",
-        },
-      },
-      TableName: "Accounts",
-    }).promise();
-    return new AccountImpl(uuid());
+    const acc = new AccountImpl(this.nextId())
+    await this.save(acc)
+    return acc;
   }
 
   async save(...accounts: Account[]): Promise<void> {
