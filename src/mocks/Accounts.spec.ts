@@ -8,6 +8,7 @@ import { expect } from "chai";
 describe("AccountsDDB", () => {
   var accounts: Accounts;
   var createItemSpy: any;
+  // Configure mock objects to return a canned response
   const idMock = sinon.mock().returns("12345")
   beforeEach(() => {
     createItemSpy = sinon.spy((params,callback) => {
@@ -43,9 +44,11 @@ describe("AccountsDDB", () => {
       expect(account.id).to.equal("12345")
       expect(account.balance).to.equal(0)
       
+      // Assert expected behaviour interaction with mock objects
       expect(createItemSpy.calledWith(expectedParams), "DynamoDB.putItem not called as expected").to.equal(true);
       expect(idMock.called, "IdGenerator not called").to.equal(true)
 
+      // Stubs are like mocks, but you don't need to verify interactions
     });
 
   });
