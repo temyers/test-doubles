@@ -1,7 +1,7 @@
 import { DynamoDB } from "aws-sdk";
 import { Account, Accounts, IdGenerator } from "..";
 import { v4 as uuid } from "uuid";
-import { AccountImpl } from "../domain/AccountImpl";
+import { AccountImpl } from "./AccountImpl";
 
 export class AccountsDDB implements Accounts {
   constructor(private ddb: DynamoDB, private nextId: IdGenerator) {}

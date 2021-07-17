@@ -2,7 +2,7 @@ import AWSMock from "aws-sdk-mock";
 import sinon from "sinon";
 import AWS from "aws-sdk";
 import { Accounts } from "..";
-import { AccountsDDB } from "./AccountsDDB";
+import { AccountsDDB } from "../domain/AccountsDDB";
 import { expect } from "chai";
 import { AccountImpl } from "../domain/AccountImpl";
 
