@@ -21,17 +21,17 @@ export class AccountsDDB implements Accounts {
   }
 
   async save(...accounts: Account[]): Promise<void> {
-    const account = accounts[0]
-    await this.ddb.putItem({
+    const saveRequests = accounts.map(acc => this.ddb.putItem({
       Item: {
         AccountId: {
-          S: account.id,
+          S: acc.id,
         },
         Balance: {
-          N: `${account.balance}`,
+          N: `${acc.balance}`,
         },
       },
       TableName: "Accounts",
-    }).promise();
+    }).promise())
+    await Promise.all(saveRequests)
   }
 }

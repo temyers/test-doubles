@@ -43,6 +43,9 @@ describe("AccountsDDB", () => {
       expect(idMock.called, "IdGenerator not called").to.equal(true)
     });
 
+  });
+
+  describe("#save",()=> {
     it("should save an account", async () => {
       // given
       const acc = new AccountImpl("22345", 400);
@@ -50,6 +53,7 @@ describe("AccountsDDB", () => {
       // when
       await accounts.save(acc)
 
+      // Then
       const expectedParams = {
         Item: {
           AccountId: {
@@ -63,5 +67,41 @@ describe("AccountsDDB", () => {
       };
       expect(createItemSpy.calledWith(expectedParams), "DynamoDB.putItem not called as expected").to.equal(true);
     });
-  });
+
+    it("should save multiple accounts", async () => {
+      // given
+      const acc1 = new AccountImpl("22345", 400);
+      const acc2 = new AccountImpl("32345", 500);
+
+      // when
+      await accounts.save(acc1, acc2)
+
+      //Then
+      const expectedAcc1Save = {
+        Item: {
+          AccountId: {
+            S: "22345",
+          },
+          Balance: {
+            N: "400",
+          },
+        },
+        TableName: "Accounts",
+      };
+      expect(createItemSpy.calledWith(expectedAcc1Save), "acc1 not saved as expected").to.equal(true);
+
+      const expectedAcc2Save = {
+        Item: {
+          AccountId: {
+            S: "32345",
+          },
+          Balance: {
+            N: "500",
+          },
+        },
+        TableName: "Accounts",
+      };
+      expect(createItemSpy.calledWith(expectedAcc2Save), "acc2 not saved as expected").to.equal(true);
+    })
+  })
 });
