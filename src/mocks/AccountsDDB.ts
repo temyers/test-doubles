@@ -1,9 +1,13 @@
 import { DynamoDB } from "aws-sdk";
-import { Account, AccountImpl, Accounts, IdGenerator } from "..";
+import { Account, Accounts, IdGenerator } from "..";
 import { v4 as uuid } from "uuid";
+import { AccountImpl } from "../domain/AccountImpl";
 
 export class AccountsDDB implements Accounts {
   constructor(private ddb: DynamoDB, private nextId: IdGenerator) {}
+  async get(id: string): Promise<Account> {
+    throw new Error("Method not implemented.");
+  }
 
   async create(): Promise<Account> {
     const acc = new AccountImpl(this.nextId())

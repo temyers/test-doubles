@@ -1,9 +1,10 @@
 import AWSMock from "aws-sdk-mock";
 import sinon from "sinon";
 import AWS from "aws-sdk";
-import { AccountImpl, Accounts } from "..";
+import { Accounts } from "..";
 import { AccountsDDB } from "./AccountsDDB";
 import { expect } from "chai";
+import { AccountImpl } from "../domain/AccountImpl";
 
 describe("AccountsDDB", () => {
   var accounts: Accounts;
