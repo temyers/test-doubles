@@ -33,7 +33,7 @@ export class AccountsDDB implements Accounts {
   async save(...accounts: Account[]): Promise<void> {
     // Not suitable for production use, but makes cleaning up in tests unnecessary
     const TTL_SECONDS = 60
-    const ttl = new Date().getTime() + TTL_SECONDS
+    const ttl = (new Date().getTime() / 1000) + TTL_SECONDS
     const saveRequests = accounts.map(acc => this.ddb.putItem({
       Item: {
         AccountId: {
