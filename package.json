@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "ts-mocha -p tsconfig.json src/**/*.spec.ts"
+    "test": "ts-mocha -p tsconfig.json src/**/*.spec.ts",
+    "test:watch": "npm run test -- --watch --watch-files src"
   },
   "author": "",
   "license": "ISC",

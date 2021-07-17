@@ -1,7 +1,7 @@
 import AWSMock from "aws-sdk-mock";
 import sinon from "sinon";
 import AWS from "aws-sdk";
-import { Accounts } from "..";
+import { AccountImpl, Accounts } from "..";
 import { AccountsDDB } from "./AccountsDDB";
 import { expect } from "chai";
 
@@ -31,7 +31,6 @@ describe("AccountsDDB", () => {
       const expectedParams = {
         Item: {
           AccountId: {
-            // S: uuid(),
             S: "12345",
           },
           Balance: {
@@ -40,13 +39,29 @@ describe("AccountsDDB", () => {
         },
         TableName: "Accounts",
       };
-      // expect(createItemSpy.calledWith(expectedParams)).toEqual(true)
       expect(createItemSpy.calledWith(expectedParams), "DynamoDB.putItem not called as expected").to.equal(true);
       expect(idMock.called, "IdGenerator not called").to.equal(true)
     });
 
-    // it("should save an account", () => {
-    //   throw new Error("todo");
-    // });
+    it("should save an account", async () => {
+      // given
+      const acc = new AccountImpl("22345", 400);
+
+      // when
+      await accounts.save(acc)
+
+      const expectedParams = {
+        Item: {
+          AccountId: {
+            S: "22345",
+          },
+          Balance: {
+            N: "400",
+          },
+        },
+        TableName: "Accounts",
+      };
+      expect(createItemSpy.calledWith(expectedParams), "DynamoDB.putItem not called as expected").to.equal(true);
+    });
   });
 });

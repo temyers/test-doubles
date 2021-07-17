@@ -21,6 +21,17 @@ export class AccountsDDB implements Accounts {
   }
 
   async save(...accounts: Account[]): Promise<void> {
-    throw new Error("Method not implemented.");
+    const account = accounts[0]
+    await this.ddb.putItem({
+      Item: {
+        AccountId: {
+          S: account.id,
+        },
+        Balance: {
+          N: `${account.balance}`,
+        },
+      },
+      TableName: "Accounts",
+    }).promise();
   }
 }
