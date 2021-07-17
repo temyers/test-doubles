@@ -1,7 +1,7 @@
 Resources:
   AWSTemplateFormatVersion: "2010-09-09"
 Resources: 
-  myDynamoDBTable: 
+  accountsTable: 
     Type: AWS::DynamoDB::Table
     Properties: 
       AttributeDefinitions: 
@@ -16,3 +16,6 @@ Resources:
       TableName: "Accounts"
       SSESpecification:
         SSEEnabled: true
+      TimeToLiveSpecification:
+        Enabled: true
+        AttributeName: TTL

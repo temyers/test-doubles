@@ -1,5 +1,8 @@
+import { DynamoDB } from "aws-sdk"
 import { expect,  } from "chai"
 import { Accounts } from ".."
+import { AccountsDDB } from "../domain/AccountsDDB"
+import { id } from "../IdGenerator"
 import { AccountsInMemory } from "./AccountsInMemory"
 
 export function suite(accounts:Accounts){
@@ -15,11 +18,14 @@ export function suite(accounts:Accounts){
 
         const accountsToCreate = 100
 
-        var generatedIds = new Set()
+        var createRequests = []
         for(var i=0; i<accountsToCreate;i++){
-          const acc = await accounts.create();
-          generatedIds.add(acc.id)
+          createRequests.push(accounts.create())
         }
+        const generatedAccounts = await Promise.all(createRequests)
+
+        var generatedIds = new Set()
+        generatedAccounts.forEach(acc => generatedIds.add(acc.id))
         
         expect(generatedIds.size).to.equal(accountsToCreate)
       })
@@ -102,3 +108,8 @@ export function suite(accounts:Accounts){
 
 // Fake implementation
 suite(new AccountsInMemory())
+
+// Integration test for real implementation
+suite(new AccountsDDB(new DynamoDB({
+  region: "ap-southeast-2"
+}), id))
